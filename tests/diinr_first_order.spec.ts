@@ -2,23 +2,32 @@ const {test,expect} = require ('@playwright/test')
 import { hello, hello2 } from './demo/hello';
 
 test.use({ storageState: 'playwright/.auth/user.json' });
+test.describe.configure({ mode: 'serial' });
 
 test('create card order', async ({ page }) => {
   await page.goto('https://dev.diinr.com/dashboard/1c8bb1b1-c64f-44e2-b6ee-0a505495225f/order');
+  // await page.pause();
   await page.getByRole('checkbox', { name: 'Don\'t show this again' }).click();
   await page.getByRole('button', { name: 'Stay in Back Office' }).click();
+  const pop = await page.getByLabel('Notifications (F8)');
+  if (pop) {
+    await page.getByLabel('Notifications (F8)').getByRole('button').filter({ hasText: /^$/ }).click();
+  
+  }
+  // const v = await page.locator('button[name="accept cookies"]');
+  // if(v) await page.locator('button[name="accept cookies"]').click();
   await page.getByRole('heading', { name: 'Omelette' }).click();
   await page.getByRole('paragraph').filter({ hasText: 'd2' }).click();
-  await page.getByLabel('Notifications (F8)').getByRole('button').filter({ hasText: /^$/ }).click();
   await page.locator('div').filter({ hasText: /^Cold drinks$/ }).nth(1).click();
   await page.getByText('Mango Lassi').nth(1).click();
-  await page.locator('button[name="accept cookies"]').click();
+  
   await page.getByRole('button', { name: '4' }).click();
   // await page.getByLabel('Notifications (F8)').getByRole('button').filter({ hasText: /^$/ }).click();
 
   await page.getByRole('button', { name: 'Add to Cart £' }).click();
   await page.getByRole('heading', { name: 'Breakfast' }).click();
   await page.getByText('Malfy - Blood orange - single£').nth(1).click();
+  // await page.pause();
   await page.getByRole('button', { name: 'Add to Cart £' }).click();
   await page.getByRole('button', { name: 'Eat In' }).click();
   await page.getByRole('button', { name: 'Pay Via' }).click();
@@ -32,17 +41,24 @@ test('create card order', async ({ page }) => {
 });
 
 
-test('create cash order', async ({ page }) => {
+test('create cash order takeaway', async ({ page }) => {
     await page.goto('https://dev.diinr.com/dashboard/1c8bb1b1-c64f-44e2-b6ee-0a505495225f/order');
   await page.getByRole('checkbox', { name: 'Don\'t show this again' }).click();
   await page.getByRole('button', { name: 'Stay in Back Office' }).click();
-  await page.getByLabel('Notifications (F8)').getByRole('button').filter({ hasText: /^$/ }).click();
+  // await page.getByLabel('Notifications (F8)').getByRole('button').filter({ hasText: /^$/ }).click();
+  // await page.locator('button[name="accept cookies"]').click();
+  const pop = await page.getByLabel('Notifications (F8)');
+  if (pop) {
+    await page.getByLabel('Notifications (F8)').getByRole('button').filter({ hasText: /^$/ }).click();
+  
+  }
   await page.getByRole('heading', { name: 'Omelette' }).click();
   await page.getByRole('paragraph').filter({ hasText: 'd2' }).click();
+  // await page.pause();
   await page.locator('div').filter({ hasText: /^Cold drinks$/ }).nth(1).click();
-  await page.getByText('Mango Lassi£').nth(1).click();
-  await page.locator('button[name="accept cookies"]').click();
-  await page.getByRole('button', { name: '2' }).click();
+  await page.getByText('Mango Lassi').nth(1).click();
+  
+  await page.getByRole('button', { name: '2', exact:true }).click();
   await page.getByRole('button', { name: 'Add to Cart £' }).click();
   await page.getByRole('button', { name: 'Takeaway' }).click();
   await page.locator('div:nth-child(2) > .flex.flex-col.w-full > .h-fit.flex.flex-col > div:nth-child(2) > div > .inline-flex').click();
@@ -55,3 +71,55 @@ test('create cash order', async ({ page }) => {
 });
 
 
+test('create cash order eatin', async ({ page }) => {
+    await page.goto('https://dev.diinr.com/dashboard/1c8bb1b1-c64f-44e2-b6ee-0a505495225f/order');
+  await page.getByRole('checkbox', { name: 'Don\'t show this again' }).click();
+  await page.getByRole('button', { name: 'Stay in Back Office' }).click();
+  const pop = await page.getByLabel('Notifications (F8)');
+  if (pop) {
+    await page.getByLabel('Notifications (F8)').getByRole('button').filter({ hasText: /^$/ }).click();
+  
+  }
+  // await page.locator('button[name="accept cookies"]').click();
+  await page.getByRole('heading', { name: 'Omelette' }).click();
+  await page.getByRole('paragraph').filter({ hasText: 'd2' }).click();
+  await page.locator('div').filter({ hasText: /^Cold drinks$/ }).nth(1).click();
+  await page.getByText('Mango Lassi').nth(1).click();
+  
+  await page.getByRole('button', { name: '2', exact:true }).click();
+  await page.getByRole('button', { name: 'Add to Cart £' }).click();
+  await page.getByRole('button', { name: 'Eat In' }).click();
+  await page.locator('div:nth-child(2) > .flex.flex-col.w-full > .h-fit.flex.flex-col > div:nth-child(2) > div > .inline-flex').click();
+  await page.getByRole('button', { name: 'Pay with Cash' }).click();
+  await page.goto('https://dev.diinr.com/dashboard/1c8bb1b1-c64f-44e2-b6ee-0a505495225f/order');
+
+
+  // Expect a title "to contain" a substring.
+  // await expect(page).toHaveTitle('The Bakery | Diinr | Diinr');
+});
+
+test('create cash order eatin discount - admin', async ({ page }) => {
+ await page.goto('https://dev.diinr.com/dashboard/1c8bb1b1-c64f-44e2-b6ee-0a505495225f/order');
+//  await page.pause();
+await page.getByRole('checkbox', { name: 'Don\'t show this again' }).click();
+  await page.getByRole('button', { name: 'Stay in Back Office' }).click();
+  await page.getByLabel('Notifications (F8)').getByRole('button').filter({ hasText: /^$/ }).click();
+  // await page.locator('button[name="accept cookies"]').click();
+  
+ await page.locator('div').filter({ hasText: /^Lunch$/ }).nth(1).click();
+  await page.locator('div').filter({ hasText: /^Chicken Burger - updated name$/ }).nth(1).click();
+  await page.getByRole('paragraph').filter({ hasText: 'Free' }).click();
+  await page.getByText('Tomato+£').nth(1).click();
+  await page.getByText('Chickend3+£').nth(1).click();
+  await page.getByRole('button', { name: 'Add to Cart £' }).click();
+  await page.getByRole('button', { name: 'Discount' }).click();
+  await page.locator('div').filter({ hasText: /^Final£0\.53Apply$/ }).getByRole('button').click();
+  await page.getByRole('button', { name: 'Confirm' }).click();
+  await page.getByRole('button', { name: 'Eat In' }).click();
+  await page.getByRole('button', { name: 'Assign Table' }).click();
+  await page.getByRole('button', { name: 'T5', exact: true }).first().click();
+  await page.getByRole('button', { name: 'Special Instructions' }).click();
+  await page.getByRole('textbox', { name: 'Instructions' }).fill('No ketch up');
+  await page.getByRole('button', { name: 'Save Instructions' }).click();
+  await page.getByRole('button', { name: 'Pay Later' }).click();
+});

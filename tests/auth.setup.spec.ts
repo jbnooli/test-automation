@@ -20,4 +20,5 @@ await page.locator('button[name="accept cookies"]').click();
 //   await page.click('button[type="submit"]');
 //   await page.waitForURL('https://your-app.com/dashboard');
   await page.context().storageState({ path: authFile });
+
 });
